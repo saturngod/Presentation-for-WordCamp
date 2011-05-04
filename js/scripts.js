@@ -1,94 +1,87 @@
 var Slides = {
-   container : $('#slides'),
-
    totalSlides : '',
+
+   slideWidth : '',
 
    translateAmount : 0,
 
    currentSlide : 0,
 
-   slideWidth : '',
-
+   container : $('#slides'),
+   
    init : function(totalSlides) {
-      if ( !totalSlides ) throw new Error('Please pass the total number of slides.');
-      Slides.totalSlides = totalSlides;
+      if ( !totalSlides ) throw new Error('Please pass the total number of slides');
+      Slides.totalSlides = ~~totalSlides;
 
       Slides.loadContent();
-      Slides.setSlideWidth();
+      Slides.setSlideWidth(); 
       Slides.keyPress();
 
-      // If the page loads, and a slide is specified in the hash,
-      // go directly to that hash.
-      if ( /#slide-\d{1,3}/i.test( location.hash ) ) {
-         Slides.currentSlide = location.hash.split('-')[1];
-         Slides.goto( Slides.currentSlide );
+      if ( /#slide-\d{1,3}/i.test( location.hash ) ) { 
+         Slides.currentSlide = ~~location.hash.split('-')[1];
+         Slides.goto();
       }
+
    },
 
    loadContent : function() {
       Slides.container.hide();
       for ( var i = 0; i < Slides.totalSlides; i++ ) {
-         $('<div id="#slide-' + i + '"></div>')
+         $('<div id="#slide-"' + i + '"></div>')
             .load('slides/' + i + '.html')
-            .appendTo(Slides.container);
-         }
+            .appendTo( Slides.container );
+      }              
       Slides.container.show();
    },
 
+   setSlideWidth : function() {
+      var each = Slides.container.children('div');
+      Slides.slideWidth = each.width() + ( parseInt( each.css('margin-right'), 10 ) );
+   },
+
    keyPress : function() {
-      $(document.body).keydown(function(e) {
-         // if left or right arrow key is pressed
-         if ( e.keyCode === 39 || e.keyCode === 37 ) {
+      $( document.body ).keydown(function(e) {
+         if ( e.keyCode === 37 || e.keyCode === 39 ) {
             e.preventDefault();
             ( e.keyCode === 39 ) ? Slides.next() : Slides.prev();
          }
       });
    },
 
-   setSlideWidth : function() {
-      var each = Slides.container.children( 'div' );
-      Slides.slideWidth = each.width() + ~~( each.css('margin-right').split('px')[0] );
-   },
-
-   next : function( ) {
+   next : function() {
+      if ( Slides.currentSlide >= Slides.totalSlides - 1 ) return;
       Slides.translateAmount -= Slides.slideWidth;
-      Slides.updateHash( ++Slides.currentSlide );
+      ++Slides.currentSlide;
+      Slides.updateHash();
       Slides.animate();
    },
 
-  prev : function() {
-     // No more left to go back.
-      if ( Slides.translateAmount === 0 ) return;
+   prev : function() {
+      if ( Slides.currentSlide <= 0 ) return;
 
       Slides.translateAmount += Slides.slideWidth;
-      Slides.updateHash( --Slides.currentSlide );
+      --Slides.currentSlide;
+      Slides.updateHash();
+      Slides.animate();
+   }, 
+
+   goto : function(  ) {
+      Slides.translateAmount = -Slides.slideWidth * Slides.currentSlide;  
       Slides.animate();
    },
 
-   goto : function(slide) {
-      // TODO - Clean this up.
-      Slides.translateAmount = -Slides.slideWidth * slide; 
+   animate : function() {
+      Slides 
+         .container
+         .children()
+            .css('-webkit-transform', 'translateX(' + Slides.translateAmount + 'px)');
+   },
 
-      Slides.container.animate({
-         left : Slides.translateAmount
-      }, 1000);
-
-      Slides.animate();
-  },
-
-  animate : function() {
-     Slides
-      .container
-      .children()
-         .css( '-webkit-transform', 'translateX(' + Slides.translateAmount + 'px)');
-  },
-
-  updateHash : function( direction ) {
-     // Update current Slides and hash.
-     location.hash = '#slide-' + Slides.currentSlide;
-  }
-
+   updateHash : function() {
+      location.hash = '#slide-' + Slides.currentSlide;
+   }
 };
 
-// All right; let's do this. 
-Slides.init(6);
+// Let's do this!
+// Pass the total number of slides as an argument.
+Slides.init(4);
