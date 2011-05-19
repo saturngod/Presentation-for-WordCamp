@@ -76,7 +76,8 @@ var Slides = {
          .container
          .children()
             .css('-webkit-transform', 'translateX(' + Slides.translateAmount + 'px)')
-            .css('-moz-transform', 'translateX(' + Slides.translateAmount + 'px)');
+            .css('-moz-transform', 'translateX(' + Slides.translateAmount + 'px)')
+            .css('-o-transform', 'translateX(' + Slides.translateAmount + 'px)');
    },
 
    updateHash : function() {
