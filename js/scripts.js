@@ -41,6 +41,7 @@ var Slides = {
 
    keyPress : function() {
       $( document.body ).keydown(function(e) {
+          console.log('here');
          if ( e.keyCode === 37 || e.keyCode === 39 ) {
             e.preventDefault();
             ( e.keyCode === 39 ) ? Slides.next() : Slides.prev();
@@ -75,6 +76,10 @@ var Slides = {
          .container
          .children()
             .css('-webkit-transform', 'translateX(' + Slides.translateAmount + 'px)');
+    Slides 
+     .container
+     .children()
+        .css('-moz-transform', 'translateX(' + Slides.translateAmount + 'px)');
    },
 
    updateHash : function() {

@@ -44,8 +44,15 @@ body {
    box-align: center;
    box-orient: horizontal;
    box-pack: center;
+   
+   
+   display: -moz-box;
+   -moz-box-align: center;
+   -moz-box-orient: horizontal;
+   -moz-box-pack: center;
 
    -webkit-transition: all 1s;
+   -moz-transition: all 1s;
 }
 
 /* Slide Styling */
@@ -108,6 +115,7 @@ li {
    border: 1px solid white;
    outline: 1px solid #666;
    display: -webkit-box;
+   display: -moz-box;
    font-size: 13px;
 }
 
